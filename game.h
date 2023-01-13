@@ -140,10 +140,10 @@ public:
 };
 
 Character* choose_class() {
-    std::cout << "Bienvenido al El Reino de Darthon. Elige tu clase:" << std::endl;
-    std::cout << "1. Wizard" << std::endl;
-    std::cout << "2. Berserker" << std::endl;
-    std::cout << "3. Assassin" << std::endl;
+    std::cout << "Bienvenido al Gran Coliseo. Elige tu clase:" << std::endl;
+    std::cout << "1. Mago" << std::endl;
+    std::cout << "2. Vikingo" << std::endl;
+    std::cout << "3. Asesino" << std::endl;
 
     int choice;
     std::cin >> choice;
