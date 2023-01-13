@@ -1,5 +1,8 @@
+#pragma once
 #include <iostream>
 #include <random>
+#include "main.cpp"
+
 class Character {
 public:
     Character(std::string name, int hp, int force, int defense) :
@@ -104,7 +107,7 @@ public:
         Character::attributes();
         std::cout << "·Energía: " << energy << std::endl;
     }
-    
+
     int damage(Character* enemy) {
         return force + energy - enemy->defense;
     }
@@ -115,25 +118,25 @@ public:
 
 class Boss : public Character {
 public:
-    Boss(std::string name, int hp, int force, int defense) : 
+    Boss(std::string name, int hp, int force, int defense) :
         Character(name, hp, force, defense) {}
-    
+
     void boss_attack(Character* enemy) {
-    std::random_device rd;
-    std::mt19937 rng(rd());
-    std::uniform_int_distribution<int> uni(30, 60);
-    auto damage = uni(rng);
-    enemy->hp -= damage;
-    std::cout << name << " ha realizado " << damage << " puntos de daño a "
-              << enemy->name << std::endl;
-    if (enemy->its_alive()) {
-      std::cout << "Vida de " << enemy->name << " es " << enemy->hp
+        std::random_device rd;
+        std::mt19937 rng(rd());
+        std::uniform_int_distribution<int> uni(30, 60);
+        auto damage = uni(rng);
+        enemy->hp -= damage;
+        std::cout << name << " ha realizado " << damage << " puntos de daño a "
+            << enemy->name << std::endl;
+        if (enemy->its_alive()) {
+            std::cout << "Vida de " << enemy->name << " es " << enemy->hp
                 << std::endl;
-    } 
-    else {
-      enemy->die();
+        }
+        else {
+            enemy->die();
+        }
     }
-  }
 };
 
 Character* choose_class() {
@@ -141,27 +144,29 @@ Character* choose_class() {
     std::cout << "1. Wizard" << std::endl;
     std::cout << "2. Berserker" << std::endl;
     std::cout << "3. Assassin" << std::endl;
-    
+
     int choice;
     std::cin >> choice;
-    
+
     std::string name;
     std::cout << "Escribe el nombre de tu personaje: ";
     std::cin >> name;
-    
+
     if (choice == 1) {
-        std::cout << "¡Bienvenido, " << name 
+        std::cout << "¡Bienvenido, " << name
             << "! ¡Aprovecha tu sabiduría y magia para dezatar todo tu poder!" << std::endl;
         return new Wizard(name, 150, 30, 200, 350);
-    } else if (choice == 2) {
-            std::cout << "¡Bienvenido, " << name 
-                << "! ¡Usa tu furia para aplastar a tus oponentes!" << std::endl;
-            return new Berserker(name, 200, 40, 150, 250);
-        } else if (choice == 3) {
-                std::cout << "¡Bienvenido, " << name 
-                    << "! ¡Utiliza tu astucia y sigilo para derrotar a tus victimas!" << std::endl;
-                return new Assassin(name, 120, 35, 170, 300);
-            }
+    }
+    else if (choice == 2) {
+        std::cout << "¡Bienvenido, " << name
+            << "! ¡Usa tu furia para aplastar a tus oponentes!" << std::endl;
+        return new Berserker(name, 200, 40, 150, 250);
+    }
+    else if (choice == 3) {
+        std::cout << "¡Bienvenido, " << name
+            << "! ¡Utiliza tu astucia y sigilo para derrotar a tus victimas!" << std::endl;
+        return new Assassin(name, 120, 35, 170, 300);
+    }
 };
 
 std::string choose_action() {
@@ -171,21 +176,23 @@ std::string choose_action() {
             std::cout << "Has superado el límite de intentos. Fin del juego." << std::endl;
             return "";
         }
-        
+
         std::cout << "¿Qué quieres hacer?" << std::endl;
         std::cout << "1. Atacar" << std::endl;
         std::cout << "2. Esquivar" << std::endl;
         int option;
         std::cin >> option;
-        
+
         if (option == 1) {
             return "atacar";
-        } else if (option == 2) {
-                return "esquivar";
-            } else {
-                std::cout << "Opción inválida" << std::endl;
-                contador++;
-            }
+        }
+        else if (option == 2) {
+            return "esquivar";
+        }
+        else {
+            std::cout << "Opción inválida" << std::endl;
+            contador++;
+        }
     }
 };
 
@@ -201,32 +208,20 @@ void combat(Character* player, Boss* boss_1) {
                 std::cout << ">>> Turno de " << boss_1->name << " <<<" << std::endl;
                 boss_1->boss_attack(player);
             }
-        } else if (act == "esquivar") {
-                bool dodged = player->dodge();
-                if (dodged) {
-                    std::cout << "Odín retrocede" << std::endl;
-                } else {
-                    if (boss_1->its_alive()) {
-                        std::cout << ">>> Turno de " << boss_1->name << " <<<" << std::endl;
-                        boss_1->boss_attack(player);
-                    }
+        }
+        else if (act == "esquivar") {
+            bool dodged = player->dodge();
+            if (dodged) {
+                std::cout << "Odín retrocede" << std::endl;
+            }
+            else {
+                if (boss_1->its_alive()) {
+                    std::cout << ">>> Turno de " << boss_1->name << " <<<" << std::endl;
+                    boss_1->boss_attack(player);
                 }
             }
+        }
         round++;
     }
-    dodged = false;
+    dodge = false;
 };
-
-Character* player = choose_class();
-Boss boss_1("Odín", 400, 50, 250);
-
-player->attributes();
-boss_1.attributes();
-
-combat(player, &boss_1);
-
-if (!player->its_alive()) {
-    std::cout << "\nHa ganado " << boss_1.name_ << std::endl;
-} else if (!boss_1.its_alive()) {
-        std::cout << "\nHa ganado " << player->name_ << std::endl;
-    };
